@@ -3,6 +3,8 @@
 # auth: nevermore
 import os
 import requests
+import logging
+from datetime import timedelta
 
 from django.db import models
 from django.conf import settings
@@ -11,10 +13,43 @@ from django.utils.translation import ugettext_lazy as _
 
 from utils.mail import Mail
 
+logger = logging.getLogger(__name__)
+
 
 class Tan14User(models.Model):
-    login_email = models.CharField(verbose_name=u'登录邮箱', max_length=100, unique=True)
-    operate_right = models.BooleanField(verbose_name=u'是否可刷新、预加载', default=True)
+    login_email = models.CharField(_(u'登录邮箱'), max_length=100, unique=True)
+    password = models.CharField(_(u'密码'), max_length=200)
+    token = models.CharField(_(u'口令'), max_length=200)
+    last_login = models.PositiveIntegerField(_(u'最后登录时间戳'),
+                                             blank=True, null=True)
+    operate_right = models.BooleanField(_(u'是否可刷新、预加载'), default=True)
+    record_date = models.DateTimeField(_(u'注册日期'), auto_now_add=True)
+    active = models.BooleanField(_(u'是否可用'), default=True)
+
+    @property
+    def join_date(self):
+        return (self.record_date + timedelta(hours=8)).strftime('%Y-%m-%d %H:%M:%S')
+
+    def set_password(self, password, remove_key=False):
+        from utils.user_tools import get_passwd
+        self.password = get_passwd(password)
+        if remove_key:
+            self.token = None
+        self._set_ps = True
+        self.save()
+
+    def save(self, *args, **kw):
+        assert any((self.email, self.phone)), u'need an email or phone'
+        if not hasattr(self, '_set_ps'):
+            if self.pk and (self.password == Tan14User.objects.get(pk=self.pk).password):
+                pass
+            else:
+                from utils.user_tools import get_passwd
+                self.password = get_passwd(self.password)
+                self._set_ps = True
+        msg = 'modify mcuser %s' if self.pk else 'created mcuser %s'
+        logger.info(msg % self.username)
+        return super(Tan14User, self).save(*args, **kw)
 
     def __str__(self):
         return self.login_email
@@ -22,16 +57,16 @@ class Tan14User(models.Model):
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, str(self))
 
-    def clean(self):
-        # Don't allow login_email re without mcaccount
-        api_url = settings.TAN14_API_BASE_URL + 'mc/private/user/login_email'
-        login_emails = requests.get(api_url).json()
-        if self.login_email not in login_emails:
-            raise ValidationError(_(u'请先在ops内注册该帐号。'
-                                    u'登录ops后台相应为公司添加用户: '
-                                    u'https://ops.tan14.cn/#/pns '
-                                    u'如果ops后台无此公司，请先注册公司：'
-                                    u'https://ops.tan14.cn/#/tools '))
+    # def clean(self):
+    #     # Don't allow login_email re without mcaccount
+    #     api_url = settings.TAN14_API_BASE_URL + 'mc/private/user/login_email'
+    #     login_emails = requests.get(api_url).json()
+    #     if self.login_email not in login_emails:
+    #         raise ValidationError(_(u'请先在ops内注册该帐号。'
+    #                                 u'登录ops后台相应为公司添加用户: '
+    #                                 u'https://ops.tan14.cn/#/pns '
+    #                                 u'如果ops后台无此公司，请先注册公司：'
+    #                                 u'https://ops.tan14.cn/#/tools '))
 
     def level3_domains(self):
         return list({i.ni.ni for i in self.cdn_set.filter(ni__service_id__isnull=False)})

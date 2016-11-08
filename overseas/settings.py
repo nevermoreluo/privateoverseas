@@ -227,6 +227,30 @@ USE_L10N = True
 USE_TZ = True
 
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+        'LOCATION': '127.0.0.1:11211',
+        'TIMEOUT': 300,  # 5 min
+        'OPTIONS': {
+            'tcp_nodelay': True,
+            'ketama': True,
+        }
+    },
+
+    'file_cache': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/home/never/Envs/antique/cache',
+        'TIMEOUT': 18000,  # 5 hours
+        'OPTIONS': {
+            'MAX_ENTRIES': 10000,
+            'CULL_FREQUENCY': 3,
+        }
+    }
+}
+
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
