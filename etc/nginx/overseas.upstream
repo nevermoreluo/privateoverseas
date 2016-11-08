@@ -1,0 +1,12 @@
+upstream overseas {
+    server 10.1.0.4:8370;
+    server 10.1.0.4:8371;
+    server 10.1.0.4:8372;
+    server 10.1.0.4:8373;
+    server 10.1.0.4:8374;
+    server 10.1.0.4:8375;
+    server 10.1.0.4:8376;
+    server 10.1.0.4:8377;
+
+    keepalive 60;
+}
