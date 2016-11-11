@@ -94,6 +94,10 @@ LOGGING = {
             'handlers': ['console1'],
             'level': 'INFO',
         },
+        'osverseas.models.access': {
+            'handlers': ['console1'],
+            'level': 'INFO',
+        },
     }
 }
 

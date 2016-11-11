@@ -354,15 +354,18 @@ return results
 
 > also support json body
 > ```{
-  "login_email":"bao.xu@maichuang.net"
+  "login_email":"bao.xu@maichuang.net",
+  "password": "123",
 }
 ```  
 
 >login_email，必选参数，用户邮箱，必须为ops内已有的帐号  
+>password, 必选参数，密码
 >operations，可选参数，设置用户是否可刷新预加载，默认为True，接受false，表示无法刷新预加载  
 ex:```
 {
   "login_email":"bao.xu@maichuang.net",
+  "password": "123",
   "operations": "false"
 }
 ```

@@ -284,27 +284,17 @@ class UserView(BaseView):
     def post(self, request):
         data = self.get_request_date(request)
         login_email = data.get('login_email', '')
+        password = data.get('password', '')
         if not login_email:
             response_data = {'err': 400,
                              'message': 'Need a login_email'}
             return self.json_resp(response_data)
-        api_url = settings.TAN14_API_BASE_URL + 'mc/private/user/login_email'
-        login_emails = requests.get(api_url).json()
-        if login_email not in login_emails:
-            response_data = {'err': 501,
-                             'message': ('Plase register in mcaccount first,'
-                                         'and make sure bound it to a company.'
-                                         '\nBe careful if company does not'
-                                         ' exist create one.')}
-            return self.json_resp(response_data)
         operate_right = False if data.get('operations') else True
-        if request.method == 'POST':
-            user = Tan14User(login_email=login_email, operate_right=operate_right)
-            user.save()
-            response_data = user.cdn_json()
-        else:
-            response_data = {'err': 405,
-                             'message': 'Get an unexcept method %s, but only support POST, OPTIONS' % request.method}
+
+        user = Tan14User(login_email=login_email, operate_right=operate_right)
+        user.set_password(password)
+        response_data = user.cdn_json()
+
         return self.json_resp(response_data)
 
 
