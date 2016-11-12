@@ -17,3 +17,7 @@ class Invalidations(models.Model):
 
     def __repr__(self):
         return '<%s: %s[%s]:%s>' % (self.__class__.__name__, str(self), self.taskid, self.percentComplete)
+
+    class Meta:
+        verbose_name = u"刷新任务"
+        verbose_name_plural = u"刷新任务"

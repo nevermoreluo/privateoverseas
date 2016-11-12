@@ -153,6 +153,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'overseas.urls'
@@ -263,7 +264,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Level3
 LEVEL3_BASE = 'https://ws.level3.com'
-LEVEL3_ACCESS_GROUP = conf.get('level3', 'LEVEL3_ACCESS_GROUP')
 LEVEL3_APIKEY = conf.get('level3', 'LEVEL3_APIKEY')
 LEVEL3_SECRET = conf.get('level3', 'LEVEL3_SECRET')
 LEVEL3_TIME_SPAN = int(conf.get('level3', 'LEVEL3_TIME_SPAN'))  # minute
@@ -285,11 +285,11 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_TASK_RESULT_EXPIRES = 3600
 
 CELERYBEAT_SCHEDULE = {
-    'level3-every-5-minute': {
-        'task': 'overseas.tasks.sync_level3',
-        'schedule': timedelta(minutes=5),
-        'args': ()
-    },
+    # 'level3-every-5-minute': {
+    #     'task': 'overseas.tasks.sync_level3',
+    #     'schedule': timedelta(minutes=5),
+    #     'args': ()
+    # },
     'level3-every-day-log': {
         'task': 'overseas.tasks.sync_level3_log',
         'schedule': crontab(minute=0, hour=9),
@@ -336,8 +336,8 @@ IPIP_DOWNLOAD_API_URL = conf.get('ipip', 'IPIP_DOWNLOAD_API_URL')
 
 
 # rsync log
-RSYNC_LOG_DIR = '/home/never/rsync_log/maichuang/'
-RSYNC_DAILY_DIR = '/home/never/rsync_log/daily_log/'
+RSYNC_LOG_DIR = '/var/log/rsync_level3/maichuang/'
+RSYNC_DAILY_DIR = '/var/log/rsync_level3/daily_log/'
 
 # LOG_DATE_SPAN
 LOG_DATE_SPAN = 3600

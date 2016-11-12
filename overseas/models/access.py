@@ -57,6 +57,10 @@ class Tan14User(models.Model):
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, str(self))
 
+    class Meta:
+        verbose_name = u"用户"
+        verbose_name_plural = u"用户"
+
     # def clean(self):
     #     # Don't allow login_email re without mcaccount
     #     api_url = settings.TAN14_API_BASE_URL + 'mc/private/user/login_email'
@@ -255,6 +259,10 @@ class NiInfo(models.Model):
                                     'city_cn': c.name_cn})
         return results
 
+    class Meta:
+        verbose_name = u"信息"
+        verbose_name_plural = u"信息"
+
 
 class City(models.Model):
     name_en = models.CharField(max_length=100)
@@ -291,3 +299,7 @@ class City(models.Model):
 
     def __repr__(self):
         return '<City: %s[%s]>' % (self.name_en, self.name_cn)
+
+    class Meta:
+        verbose_name = u"城市"
+        verbose_name_plural = u"城市"
