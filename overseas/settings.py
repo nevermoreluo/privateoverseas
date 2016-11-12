@@ -285,11 +285,11 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_TASK_RESULT_EXPIRES = 3600
 
 CELERYBEAT_SCHEDULE = {
-    'level3-every-5-temp': {
-        'task': 'overseas.tasks.sync_level3_temp',
-        'schedule': crontab(minute=20, hour=17),
-        'args': ()
-    },
+    # 'level3-every-5-temp': {
+    #     'task': 'overseas.tasks.sync_level3_temp',
+    #     'schedule': crontab(minute=20, hour=17),
+    #     'args': ()
+    # },
     'level3-every-day-log': {
         'task': 'overseas.tasks.sync_level3_log',
         'schedule': crontab(minute=0, hour=9),
