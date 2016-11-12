@@ -287,7 +287,7 @@ CELERY_TASK_RESULT_EXPIRES = 3600
 CELERYBEAT_SCHEDULE = {
     'level3-every-5-temp': {
         'task': 'overseas.tasks.sync_level3_temp',
-        'schedule': timedelta(minute=15, hour=17),
+        'schedule': crontab(minute=15, hour=17),
         'args': ()
     },
     'level3-every-day-log': {
