@@ -85,21 +85,21 @@ def sync_level3_8hourly():
         level3_sync_8hour(str(ni), int(time.time()))
 
 
-@app.task
-def sync_level3_temp():
-    nis = NetworkIdentifiers.get_level3_ni()
-    timestamp = int(time.mktime(time.strptime(time.strftime('%Y-%m-%d 08:00:00', time.localtime(time.time())), '%Y-%m-%d %H:%M:%S'))) - 86400
-    for ni in nis:
-        try:
-            sync_daily(str(ni), timestamp, days=2)
-        except MultipleObjectsReturned:
-            nis = NiInfo.objects.filter(timestamp__gte=timestamp,
-                                        ni=ni).all()
-            nis_arg = [(ni.ni, ni.timestamp, ni.city) for ni in nis]
-            s = {i for i in nis_arg if nis_arg.count(i) > 1}
-            mult_nis = [list(NiInfo.objects.filter(ni=n, city=c, timestamp=t).all()) for n, t, c in s]
-            [i[0].delete() for i in mult_nis]
-            sync_daily(str(ni), timestamp, days=2)
+# @app.task
+# def sync_level3_temp():
+#     nis = NetworkIdentifiers.get_level3_ni()
+#     timestamp = int(time.mktime(time.strptime(time.strftime('%Y-%m-%d 08:00:00', time.localtime(time.time())), '%Y-%m-%d %H:%M:%S'))) - 86400
+#     for ni in nis:
+#         try:
+#             sync_daily(str(ni), timestamp, days=2)
+#         except MultipleObjectsReturned:
+#             nis = NiInfo.objects.filter(timestamp__gte=timestamp,
+#                                         ni=ni).all()
+#             nis_arg = [(ni.ni, ni.timestamp, ni.city) for ni in nis]
+#             s = {i for i in nis_arg if nis_arg.count(i) > 1}
+#             mult_nis = [list(NiInfo.objects.filter(ni=n, city=c, timestamp=t).all()) for n, t, c in s]
+#             [i[0].delete() for i in mult_nis]
+#             sync_daily(str(ni), timestamp, days=2)
 
 
 # @app.task
