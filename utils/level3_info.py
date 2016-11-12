@@ -108,7 +108,12 @@ def sync_service():
                 _, agid, service, ni = serviceResource.split('/')
                 ser, created = Service.objects.get_or_create(
                     scid=service, access_group=ag)
+                if created:
+                    logger.info('Created service %s' % service)
                 ni, created = NetworkIdentifiers.objects.get_or_create(
                     ni=ni, service=ser)
+                if created:
+                    logger.info('Created NetworkIdentifiers %s' % ni)
+                logger.info('Update NetworkIdentifiers %s' % ni)
                 ni.active = active
                 ni.save()
