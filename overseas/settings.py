@@ -232,14 +232,13 @@ USE_TZ = True
 
 
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
-        'LOCATION': '127.0.0.1:11211',
-        'TIMEOUT': 300,  # 5 min
-        'OPTIONS': {
-            'tcp_nodelay': True,
-            'ketama': True,
-        }
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "level3_cache"
     },
 
     'file_cache': {
