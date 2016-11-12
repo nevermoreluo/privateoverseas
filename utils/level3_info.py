@@ -114,6 +114,5 @@ def sync_service():
                     ni=ni, service=ser)
                 if created:
                     logger.info('Created NetworkIdentifiers %s' % ni)
-                logger.info('Update NetworkIdentifiers %s' % ni)
                 ni.active = active
                 ni.save()
