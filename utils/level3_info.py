@@ -98,7 +98,7 @@ def sync_service():
     ags = AccessGroup.objects.all()
     for ag in ags:
         soup = Level3.servicesHierarchy(str(ag.agid))
-        ni_resources = soup.select('accessgroup > networkidentifiers')
+        ni_resources = soup.select('accessgroup > services > service > networkidentifiers')
 
         for netid in ni_resources:
             serviceResources = [
