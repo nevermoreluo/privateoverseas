@@ -1,5 +1,6 @@
 amqp==1.4.9
 anyjson==0.3.3
+Babel==2.3.4
 beautifulsoup4==4.5.1
 billiard==3.3.0.23
 celery==3.1.23
@@ -7,6 +8,9 @@ configparser==3.5.0
 decorator==4.0.10
 Django==1.10
 django-cache-machine==0.9.1
+django-redis==4.6.0
+flower==0.9.1
+futures==3.0.5
 -e git+https://github.com/ym/python-ipip@ed4abe10b1ff713525a664709c9254be045d6570#egg=ipip
 ipython==5.1.0
 ipython-genutils==0.1.0
@@ -23,6 +27,7 @@ redis==2.10.5
 requests==2.11.1
 simplegeneric==0.8.1
 six==1.10.0
+tornado==4.2
 traitlets==4.2.2
 uWSGI==2.0.13.1
 wcwidth==0.1.7
