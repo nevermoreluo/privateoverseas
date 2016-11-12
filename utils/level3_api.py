@@ -244,8 +244,6 @@ class Level3:
 
     @staticmethod
     def usage_report(active, date_from, date_to, options={}, json=True, bs4=False):
-        if int(date_to) > time.time():
-            raise Exception('Unexcept time %s' % date_to)
         try:
             date_from = time.strftime(
                 "%Y%m%d%H%M", time.localtime(date_from - 8 * 3600))
