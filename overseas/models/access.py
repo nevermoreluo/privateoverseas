@@ -189,7 +189,7 @@ class NetworkIdentifiers(models.Model):
 
     @classmethod
     def get_level3_ni(cls):
-        return cls.objects.filter(service_id__isnull=False).all()
+        return cls.objects.filter(service_id__isnull=False, active=True).all()
 
 
 class NiInfoManager(models.Manager):
