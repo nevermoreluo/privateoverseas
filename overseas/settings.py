@@ -280,6 +280,11 @@ SWIFTSERVE_PASSWORD = conf.get('swiftserve', 'SWIFTSERVE_PASSWORD')
 BROKER_URL = conf.get('celery', 'CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = conf.get('celery', 'CELERY_RESULT_BACKEND')
 
+CELERY_TASK_SERIALIZER = 'json'
+
+# celery 定时任务过期时间
+CELERY_TASK_RESULT_EXPIRES = 3600
+
 CELERYBEAT_SCHEDULE = {
     'level3-every-5-minute': {
         'task': 'overseas.tasks.sync_level3',
