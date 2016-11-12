@@ -334,6 +334,8 @@ EMAIL_PASS = conf.get('sender', 'PASSWD')
 IPIP_DATX_PATH = os.path.join(BASE_DIR, conf.get('ipip', 'IPIP_DATX_PATH'))
 IPIP_DOWNLOAD_API_URL = conf.get('ipip', 'IPIP_DOWNLOAD_API_URL')
 
+# login expires
+LOGIN_EXPIRES = 3600
 
 # rsync log
 RSYNC_LOG_DIR = '/var/log/rsync_level3/maichuang/'

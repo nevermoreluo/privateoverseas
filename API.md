@@ -11,7 +11,10 @@
  [10.Create User](#create-user)  `POST` 新增用户  
  [11.User Domains](#user-domains) `GET, POST, PUT` 查询，新增，修改用户与域名的映射关系  
  [12.User CDN map](#user-cdn-map) `GET, POST` 查询，新增用户与cdn映射关系  
- [13.Logdownload](#logdownload) `GET` 获取日志下载url列表  
+ [13.Logdownload](#logdownload) `GET` 获取日志下载url列表 
+ [14.Login](#login) `POST` 登陸  
+ [15.Logout](#logout) `POST` 注銷  
+ [16.LoginCheck](#logincheck) `GET` 查詢賬號是否在綫   
 
 `GET, POST, PUT, DELETE`  
 
@@ -539,6 +542,61 @@ return results
 
 -----------------------------------------------
 
+### Login  
+登陸
+#### `POST` http://if.tan14.cn/level3/login  
+> accept json body  
+> {
+    "login_email": "bao.xu@maichuang.net",
+    "password": "123",
+}  
+> login_email: 必选, tan14useremail  
+> password: 必选
+
+ return results
+
+```
+
+```
+
+-----------------------------------------------
+  
+### Logout  
+注銷  
+#### `POST` http://if.tan14.cn/level3/logout  
+
+> accept json body  
+> {
+    "token": "sxkxbzmu72jxm",
+}  
+> token: 必选, 口令  
+
+return results
+
+```
+
+```
+
+
+ 
+-----------------------------------------------
+  
+### LoginCheck  
+查詢賬號是否在綫
+#### `GET` http://if.tan14.cn/level3/logincheck   
+> accept json body  
+> {
+    "token": "sxkxbzmu72jxm",
+}  
+> token: 必选, 口令  
+
+return results
+
+```
+
+```
+
+-----------------------------------------------
 
 ####  `废弃`
 

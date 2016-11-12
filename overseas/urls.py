@@ -23,7 +23,8 @@ from django.conf import settings
 from overseas.views import (FluxsView, BandwidthsView, NetworkId,
                             RefreshView, RefreshListView, UserDomainView,
                             UserCDNView, UserView,
-                            LogDownloadView, LogListView, abtest)
+                            LogDownloadView, LogListView, 
+                            LoginView, LogoutView, LoginCheckView, abtest)
 
 
 admin.site.site_header = settings.ADMIN_SITE_HEADER
@@ -31,6 +32,12 @@ admin.site.site_header = settings.ADMIN_SITE_HEADER
 urlpatterns = [
     # 标准admin管理系统
     url(r'^level3/tan14/', admin.site.urls),
+    # 登陸
+    url(r'^level3/login', LoginView, name='login'),
+    # 注銷
+    url(r'^level3/logout', LogoutView, name='logout'),
+    # 賬號是否登陸
+    url(r'^level3/logincheck', LoginCheckView, name='logincheck')
     # 查询带宽接口
     url(r'^level3/bandwidths$', BandwidthsView.as_view(), name='bandwidths'),
     # 查询流量接口，按时间

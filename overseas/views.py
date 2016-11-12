@@ -285,7 +285,7 @@ class UserView(BaseView):
         data = self.get_request_date(request)
         login_email = data.get('login_email', '')
         password = data.get('password', '')
-        if not login_email:
+        if not all([login_email, password]):
             response_data = {'err': 400,
                              'message': 'Need a login_email'}
             return self.json_resp(response_data)
@@ -488,6 +488,63 @@ class LogDownloadView(BaseView):
         response[
             'Content-Disposition'] = 'attachment;filename="{0}"'.format(filename)
         return response
+
+
+class LoginView(BaseView):
+    http_method_names = ['options', 'post']
+
+    def post(self, request):
+        self.data = self.get_request_date(request)
+        login_email = data.get('login_email', '')
+        password = data.get('password', '')
+        if not all([login_email, password]):
+            response_data = {'err': 400,
+                             'message': u'請輸入賬號和密碼'}
+            return self.json_resp(response_data)
+        from utils.user_tools import check_passwd
+        check, user_obj = check_passwd(login_email, password, reset_token=Ture)
+        return self.json_resp(user_obj.json())
+
+
+class LogoutView(BaseView):
+    http_method_names = ['options', 'post']
+
+    def post(self, request):
+        self.data = self.get_request_date(request)
+        token = data.get('token', '')
+        if not token:
+            response_data = {'err': 400,
+                             'message': u'請輸入token'}
+            return self.json_resp(response_data)
+        try:
+            user_obj = Tan14User.objects.get(token=token)
+        except ObjectDoesNotExist:
+            pass
+        user_obj.token = None
+        return self.json_resp({'err': 0,
+                               'message': u'賬號已注銷'})
+
+
+
+class LoginCheckView(BaseView):
+    http_method_names = ['options', 'get']
+
+    def get(self, request):
+        self.data = self.get_request_date(request)
+        login_email = self.data.get('login_email', '')
+        if not login_email:
+            response_data = {'err': 400,
+                             'message': 'Need a login_email'}
+            return self.json_resp(response_data)
+        try:
+            timestamp = int(time.time()) - settings.LOGIN_EXPIRES
+            user_obj = Tan14User.objects.get(login_email=login_email,
+                                            last_login__gt=timestamp)
+            flag = 1
+        except ObjectDoesNotExist:
+            flag = 0
+        return self.json_resp('err': 0,
+                              'alive': flag)
 
 
 def abtest(request):

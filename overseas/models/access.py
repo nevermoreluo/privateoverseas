@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 class Tan14User(models.Model):
     login_email = models.CharField(_(u'登录邮箱'), max_length=100, unique=True)
     password = models.CharField(_(u'密码'), max_length=200)
-    token = models.CharField(_(u'口令'), max_length=200)
+    token = models.CharField(_(u'口令'), max_length=200, blank=True, null=True)
     last_login = models.PositiveIntegerField(_(u'最后登录时间戳'),
                                              blank=True, null=True)
     operate_right = models.BooleanField(_(u'是否可刷新、预加载'), default=True)
@@ -61,19 +61,16 @@ class Tan14User(models.Model):
         verbose_name = u"用户"
         verbose_name_plural = u"用户"
 
-    # def clean(self):
-    #     # Don't allow login_email re without mcaccount
-    #     api_url = settings.TAN14_API_BASE_URL + 'mc/private/user/login_email'
-    #     login_emails = requests.get(api_url).json()
-    #     if self.login_email not in login_emails:
-    #         raise ValidationError(_(u'请先在ops内注册该帐号。'
-    #                                 u'登录ops后台相应为公司添加用户: '
-    #                                 u'https://ops.tan14.cn/#/pns '
-    #                                 u'如果ops后台无此公司，请先注册公司：'
-    #                                 u'https://ops.tan14.cn/#/tools '))
-
     def level3_domains(self):
         return list({i.ni.ni for i in self.cdn_set.filter(ni__service_id__isnull=False)})
+
+    def json(self):
+        return {'err': 0,
+                'user': self.login_email,
+                'operate_right': self.operate_right,
+                'token': self.token,
+                'record_date': self.record_date,
+                'last_login': self.last_login}
 
     def _json(self):
         cdns = self.cdn_set.all()
