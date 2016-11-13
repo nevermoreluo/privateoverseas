@@ -68,7 +68,6 @@ class Tan14User(models.Model):
                 'user': self.login_email,
                 'operate_right': self.operate_right,
                 'token': self.token,
-                'record_date': self.record_date,
                 'last_login': self.last_login}
 
     def _json(self):
