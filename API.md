@@ -1,5 +1,5 @@
 ## 目录
- [1.Domains info](#domain-info) `GET` 查询Domains信息列表  
+ [1.Domains info](#domains-info) `GET` 查询Domains信息列表  
  [2.Bandwidths data](#bandwidths-data) `GET`  查询带宽接口，按时间  
  [3.Fluxs data](#fluxs-data) `GET` 查询流量接口，按时间  
  [4.Bandwidths area](#bandwidths-area) `GET`  查询流量区域分布接口  
