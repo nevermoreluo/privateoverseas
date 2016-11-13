@@ -39,7 +39,6 @@ class Tan14User(models.Model):
         self.save()
 
     def save(self, *args, **kw):
-        assert any((self.email, self.phone)), u'need an email or phone'
         if not hasattr(self, '_set_ps'):
             if self.pk and (self.password == Tan14User.objects.get(pk=self.pk).password):
                 pass
@@ -48,7 +47,7 @@ class Tan14User(models.Model):
                 self.password = get_passwd(self.password)
                 self._set_ps = True
         msg = 'modify mcuser %s' if self.pk else 'created mcuser %s'
-        logger.info(msg % self.username)
+        logger.info(msg % self.login_email)
         return super(Tan14User, self).save(*args, **kw)
 
     def __str__(self):
