@@ -11,7 +11,7 @@ from overseas.models.access import Tan14User
 
 def get_token():
     timestamp = time.time()
-    data = '{}{}'.format(timestamp, settings.SECRET_KEY)
+    data = '{}{}'.format(timestamp, settings.SECRET_KEY).encode('utf8')
     return (int(timestamp), hashlib.md5(data).hexdigest())
 
 
