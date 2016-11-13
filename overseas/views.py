@@ -495,14 +495,14 @@ class LoginView(BaseView):
 
     def post(self, request):
         self.data = self.get_request_date(request)
-        login_email = data.get('login_email', '')
-        password = data.get('password', '')
+        login_email = self.data.get('login_email', '')
+        password = self.data.get('password', '')
         if not all([login_email, password]):
             response_data = {'err': 400,
                              'message': u'請輸入賬號和密碼'}
             return self.json_resp(response_data)
         from utils.user_tools import check_passwd
-        check, user_obj = check_passwd(login_email, password, reset_token=Ture)
+        check, user_obj = check_passwd(login_email, password, reset_token=True)
         return self.json_resp(user_obj.json())
 
 
@@ -511,7 +511,7 @@ class LogoutView(BaseView):
 
     def post(self, request):
         self.data = self.get_request_date(request)
-        token = data.get('token', '')
+        token = self.data.get('token', '')
         if not token:
             response_data = {'err': 400,
                              'message': u'請輸入token'}
@@ -523,7 +523,6 @@ class LogoutView(BaseView):
         user_obj.token = None
         return self.json_resp({'err': 0,
                                'message': u'賬號已注銷'})
-
 
 
 class LoginCheckView(BaseView):
@@ -543,8 +542,8 @@ class LoginCheckView(BaseView):
             flag = 1
         except ObjectDoesNotExist:
             flag = 0
-        return self.json_resp('err': 0,
-                              'alive': flag)
+        return self.json_resp({'err': 0,
+                               'alive': flag})
 
 
 def abtest(request):

@@ -23,7 +23,7 @@ from django.conf import settings
 from overseas.views import (FluxsView, BandwidthsView, NetworkId,
                             RefreshView, RefreshListView, UserDomainView,
                             UserCDNView, UserView,
-                            LogDownloadView, LogListView, 
+                            LogDownloadView, LogListView,
                             LoginView, LogoutView, LoginCheckView, abtest)
 
 
@@ -37,7 +37,7 @@ urlpatterns = [
     # 注銷
     url(r'^level3/logout', LogoutView, name='logout'),
     # 賬號是否登陸
-    url(r'^level3/logincheck', LoginCheckView, name='logincheck')
+    url(r'^level3/logincheck', LoginCheckView, name='logincheck'),
     # 查询带宽接口
     url(r'^level3/bandwidths$', BandwidthsView.as_view(), name='bandwidths'),
     # 查询流量接口，按时间
