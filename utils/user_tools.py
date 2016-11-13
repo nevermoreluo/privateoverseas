@@ -16,11 +16,11 @@ def get_token():
 
 
 def get_passwd(passwd):
-    return hashlib.md5('{}{}'.format(passwd, settings.SECRET_KEY)).hexdigest()
+    return hashlib.md5('{}{}'.format(passwd, settings.SECRET_KEY).encode('utf8')).hexdigest()
 
 
 def check_passwd(login_email, password, reset_token=False):
-    passwd = hashlib.md5('{}{}'.format(password, settings.SECRET_KEY)).hexdigest()
+    passwd = hashlib.md5('{}{}'.format(password, settings.SECRET_KEY).encode('utf8')).hexdigest()
     try:
         user = Tan14User.objects.get(login_email=login_email, password=passwd)
     except ObjectDoesNotExist:
