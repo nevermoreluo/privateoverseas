@@ -557,7 +557,13 @@ return results
  return results
 
 ```
-
+{
+  "operate_right": true,
+  "last_login": 1479023514,
+  "err": 0,
+  "token": "3b7a74a03a0d4ffe8d12c7d891ebc4e6",
+  "user": "lelun.chen@maichuang.net"
+}
 ```
 
 -----------------------------------------------
@@ -575,7 +581,10 @@ return results
 return results  
 
 ```
-
+{
+  "message": "賬號已注銷",
+  "err": 0
+}
 ```
 
 
@@ -587,14 +596,18 @@ return results
 #### `GET` https://api.infquick.com/level3/logincheck  
 > accept json body  
 > {
-    "token": "sxkxbzmu72jxm",
+    "login_email": "lelun.chen@maichuang.net",
 }
-> token: 必选, 口令  
+> login_email: 必选, 口令  
 
 return results  
+> alive:1表示在綫，0表示不在綫  
 
 ```
-
+{
+  "alive": 1,
+  "err": 0
+}
 ```
 
 -----------------------------------------------
