@@ -503,7 +503,9 @@ class LoginView(BaseView):
             return self.json_resp(response_data)
         from utils.user_tools import check_passwd
         check, user_obj = check_passwd(login_email, password, reset_token=True)
-        return self.json_resp(user_obj.json())
+        resp = user_obj.json()
+        resp.update({'login_email': user_obj.login_email})
+        return self.json_resp(resp)
 
 
 class LogoutView(BaseView):
