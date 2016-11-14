@@ -84,7 +84,7 @@ class BaseNiInfoView(BaseView):
     def get(self, request, attr, key='timeStamp'):
         data = self.get_request_date(request)
         # check domains
-        nis = NetworkIdentifiers.all_ni()
+        nis = NetworkIdentifiers.objects.all()
         data_domains = [v for k, v in data.items() if 'domain' in k]
         unkonw_domains = list(filter(lambda k: k not in nis, data_domains))
         if unkonw_domains:
