@@ -135,7 +135,7 @@ class AccessGroup(models.Model):
     name = models.CharField(max_length=100)
     desc = models.CharField(max_length=200)
     api_correlation_id = models.CharField(max_length=100)
-    active = models.BooleanField(default=True)
+    active = models.BooleanField(_(u'是否可用'), default=True)
 
     def __str__(self):
         return str(self.agid)
@@ -148,7 +148,7 @@ class Service(models.Model):
 
     scid = models.CharField(max_length=50, unique=True)
     access_group = models.ForeignKey(AccessGroup)
-    active = models.BooleanField(default=True)
+    active = models.BooleanField(_(u'是否可用'), default=True)
 
     def __str__(self):
         return '/'.join((str(self.access_group), self.scid))
@@ -160,7 +160,7 @@ class Service(models.Model):
 class NetworkIdentifiers(models.Model):
     ni = models.CharField(max_length=100, unique=True)
     service = models.ForeignKey(Service, blank=True, null=True)
-    active = models.BooleanField(default=True)
+    active = models.BooleanField(_(u'是否可用'), default=True)
 
     def save(self, *args, **kw):
         if not self.pk and self.service:
@@ -173,7 +173,7 @@ class NetworkIdentifiers(models.Model):
         super(NetworkIdentifiers, self).save(*args, **kw)
 
     def __str__(self):
-        return '/'.join((str(self.service), self.ni))
+        return '%s/%s[Active: %s]' % (str(self.service), self.ni, self.active)
 
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, str(self))

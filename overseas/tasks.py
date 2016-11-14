@@ -26,20 +26,20 @@ def sync_level3():
     # for ni in nis:
     #     level3_sync_5min(str(ni), int(time.time()))
 
-
 @app.task
 def sync_level3_log(days=1):
     cmd = ('/usr/bin/rsync -vzrtopg --progress '
-           '--password-file=/home/never/rsync_log/rsyncd.pas '
-           'maichuang@202.55.17.10::maichuang_home/* '
+           '--password-file=/var/log/rsync_level3/rsyncd.pas '
+           'lingrui@202.55.17.10::lingrui_home/* '
            '%s') % settings.RSYNC_LOG_DIR
     os.system(cmd)
 
     sync_service()
     nis = NetworkIdentifiers.get_level3_ni()
+    yesterday = (datetime.datetime.today() - datetime.timedelta(days=days)).strftime("%Y/%m/%d/")
     for ni in nis:
         nidir = settings.RSYNC_DAILY_DIR + ni.ni
-        yesterday_file = (datetime.datetime.today() - datetime.timedelta(days=days)).strftime("%Y/%m/%d/") + ni.ni
+        yesterday_file = yesterday + ni.ni
         abs_filename = settings.RSYNC_LOG_DIR + yesterday_file
         if os.path.exists(abs_filename):
             zipfiles = sorted(glob.glob(abs_filename + '/*.gz'))
