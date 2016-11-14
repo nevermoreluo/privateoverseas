@@ -180,7 +180,7 @@ class NetworkIdentifiers(models.Model):
 
     @classmethod
     def all_ni(cls):
-        return [ni.ni for ni in cls.objects.filter(active=True).all()]
+        return [ni.ni for ni in cls.objects.all()]
 
     @classmethod
     def get_level3_ni(cls):
