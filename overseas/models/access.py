@@ -173,7 +173,7 @@ class NetworkIdentifiers(models.Model):
         super(NetworkIdentifiers, self).save(*args, **kw)
 
     def __str__(self):
-        return '%s/%s[Active: %s]' % (str(self.service), self.ni, self.active)
+        return '%s/%s' % (str(self.service), self.ni)
 
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, str(self))
