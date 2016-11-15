@@ -142,7 +142,7 @@ def sync_level3_8hourly():
 
 @app.task
 def sync_level3_temp():
-    base_threadpool_sync(sync_daily, 1477958400, span=14, workers=6)
+    base_threadpool_sync(sync_daily, 1475280000, span=36, workers=6)
     # sync_service()
     # from multiprocessing.dummy import Pool as ThreadPool
     # # Make the Pool of workers
