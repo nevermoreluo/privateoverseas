@@ -193,7 +193,7 @@ class NiInfoManager(models.Manager):
         return super(NiInfoManager, self).get_queryset()
 
     def get_info(self, startTime, endTime, data_domains):
-        return self.get_queryset().filter(timestamp__gte=startTime,
+        return self.get_queryset().only('volume', 'bandwidth', 'city', 'ni', 'timestamp').filter(timestamp__gte=startTime,
                                           timestamp__lte=endTime,
                                           ni__ni__in=data_domains)
 
