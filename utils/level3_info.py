@@ -74,26 +74,26 @@ def level3_sync(active, timestamp, timedelta):
     _create_ni_info(active, data)
 
 
-def level3_sync_5min(active, timestamp):
+def level3_sync_5min(active, timestamp, span=None):
     time_span = settings.LEVEL3_TIME_SPAN * 60.0
     level3_sync(active, timestamp - time_span, time_span)
 
 
-def level3_sync_hourly(active, timestamp):
+def level3_sync_hourly(active, timestamp, span=None):
     timestamp = int(timestamp / 3600) * 3600
     level3_sync(active, timestamp - 7200, 7200)
 
 
-def level3_sync_8hour(active, timestamp):
+def level3_sync_8hour(active, timestamp, span=None):
     timestamp = int(timestamp / 28800) * 28800
     level3_sync(active, timestamp - 36000, 36000)
 
 
-def sync_daily(active, timestamp, days=30):
+def sync_daily(active, timestamp, span=30):
     time_span = settings.LEVEL3_TIME_SPAN * 60.0
     day_s = 60 * 60 * 24
     timestamp = int(timestamp / time_span) * time_span
-    for i in range(days):
+    for i in range(span):
         level3_sync(active, timestamp, day_s)
         timestamp += day_s
 
