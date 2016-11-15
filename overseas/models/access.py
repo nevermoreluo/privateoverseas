@@ -248,7 +248,7 @@ class NiInfo(models.Model):
             # update userful value
             all_results.update(userful_dict)
             # build results
-            results = [{key: k, 'value': v}
+            results = [{key: k, 'value': int(v)}
                        for k, v in sorted(all_results.items(), key=lambda x: x[0])]
 
 
