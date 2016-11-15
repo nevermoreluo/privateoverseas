@@ -77,15 +77,17 @@ class BaseSync(object):
 
 def base_threadpool_sync(func, timestamp, span=1, workers=2):
     sync_service()
+
     # Make the Pool of workers
     pool = ThreadPool(workers)
     nis = NetworkIdentifiers.get_level3_ni()
     base_sync = BaseSync(func, timestamp, span=span)
+    logger.info('Begin threadpool workers!')
     results = pool.map(base_sync, nis)
     # close the pool and wait for the work to finish
     pool.close()
     pool.join()
-    logger.info('Finsh threadpool!')
+    logger.info('Finsh threadpool workers!')
 
 
 @app.task
