@@ -221,7 +221,7 @@ class NiInfo(models.Model):
         time_span = settings.LEVEL3_TIME_SPAN * 60
         startTime = int(startTime / time_span) * time_span
         endTime = int(endTime / time_span) * time_span
-        ni_ids = tuple(NetworkIdentifiers.objects.get(ni=domain).pk for domian in data_domains)
+        ni_ids = tuple(NetworkIdentifiers.objects.get(ni=domian).pk for domian in data_domains)
         ni_sql = ('ni_id=%s' % ni_ids[0]) if len(ni_ids) == 1 else ('ni_id in %s' % str(ni_ids))
 
         if key != 'city':
