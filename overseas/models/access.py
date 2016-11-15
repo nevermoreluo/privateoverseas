@@ -222,13 +222,11 @@ class NiInfo(models.Model):
         startTime = int(startTime / time_span) * time_span
         endTime = int(endTime / time_span) * time_span
 
-        # mix domains resp_data
-        nis = cls.objects.get_info(startTime, endTime, data_domains).all()
-
         if key != 'city':
+            nis = cls.objects.get_info(startTime, endTime, data_domains).values()
             # use python Comprehensions speed-up of response
             # fix request timeout error when get a long period of time
-            ni_results = [(getattr(ni, key.lower(), 0), getattr(ni, attr, 0))
+            ni_results = [(ni.get(key.lower(), 0), ni.get(attr, 0))
                           for ni in nis]
             # sum countries value for each timeStamp
             userful_dict = {i: sum(va for ke, va in ni_results if ke == i) for i in
@@ -242,6 +240,26 @@ class NiInfo(models.Model):
             # build results
             results = [{key: k, 'value': v}
                        for k, v in sorted(all_results.items(), key=lambda x: x[0])]
+
+
+            # # mix domains resp_data
+            # nis = cls.objects.get_info(startTime, endTime, data_domains).all()
+            # # use python Comprehensions speed-up of response
+            # # fix request timeout error when get a long period of time
+            # ni_results = [(getattr(ni, key.lower(), 0), getattr(ni, attr, 0))
+            #               for ni in nis]
+            # # sum countries value for each timeStamp
+            # userful_dict = {i: sum(va for ke, va in ni_results if ke == i) for i in
+            #             set(t for t, v in ni_results)}
+
+            # # build timeStamp,value dict default value 0
+            # all_results = {t: 0 for t in range(startTime, endTime + 1, time_span)}
+
+            # # update userful value
+            # all_results.update(userful_dict)
+            # # build results
+            # results = [{key: k, 'value': v}
+            #            for k, v in sorted(all_results.items(), key=lambda x: x[0])]
         else:
             cs = City.objects.all()
             results = []
