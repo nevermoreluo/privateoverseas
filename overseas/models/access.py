@@ -8,6 +8,7 @@ from datetime import timedelta
 
 from django.db import models
 from django.conf import settings
+from django.db import connection
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
@@ -99,13 +100,16 @@ CDN_TYPE = (
 
 
 class CDN(models.Model):
-    cdn_name = models.CharField(verbose_name=u'CDN', max_length=100, choices=CDN_TYPE)
+    cdn_name = models.CharField(
+        verbose_name=u'CDN', max_length=100, choices=CDN_TYPE)
     tan14_user = models.ForeignKey(Tan14User, blank=True, null=True)
-    ni = models.ForeignKey('NetworkIdentifiers', verbose_name=u'域名', blank=True, null=True)
+    ni = models.ForeignKey(
+        'NetworkIdentifiers', verbose_name=u'域名', blank=True, null=True)
     active = models.BooleanField(verbose_name=u'可用', default=True)
 
     def clean(self):
-        cdns = [(c.cdn_name, c.ni.ni) for c in CDN.objects.filter(tan14_user=self.tan14_user)]
+        cdns = [(c.cdn_name, c.ni.ni)
+                for c in CDN.objects.filter(tan14_user=self.tan14_user)]
         if self.pk is None:
             if (self.cdn_name, getattr(self.ni, 'ni', '')) in cdns:
                 raise ValidationError(_(u'无法保存重复的域名,请检查后再保存'))
@@ -194,8 +198,8 @@ class NiInfoManager(models.Manager):
 
     def get_info(self, startTime, endTime, data_domains):
         return self.get_queryset().only('volume', 'bandwidth', 'city', 'ni', 'timestamp', 'requests').filter(timestamp__gte=startTime,
-                                          timestamp__lte=endTime,
-                                          ni__ni__in=data_domains)
+                                                                                                             timestamp__lte=endTime,
+                                                                                                             ni__ni__in=data_domains)
 
 
 class NiInfo(models.Model):
@@ -221,65 +225,53 @@ class NiInfo(models.Model):
         time_span = settings.LEVEL3_TIME_SPAN * 60
         startTime = int(startTime / time_span) * time_span
         endTime = int(endTime / time_span) * time_span
-        ni_ids = tuple(NetworkIdentifiers.objects.get(ni=domian).pk for domian in data_domains)
-        ni_sql = ('ni_id=%s' % ni_ids[0]) if len(ni_ids) == 1 else ('ni_id in %s' % str(ni_ids))
+        ni_ids = tuple(NetworkIdentifiers.objects.get(
+            ni=domian).pk for domian in data_domains)
+        ni_sql = ('ni_id=%s' % ni_ids[0]) if len(
+            ni_ids) == 1 else ('ni_id in %s' % str(ni_ids))
 
         if key != 'city':
-            from django.db import connection
             with connection.cursor() as cursor:
                 sql = ('select %s,sum(%s) from overseas_niinfo '
                        'where timestamp>%s and timestamp<%s '
-                       'and %s group by %s') % (key.lower(), attr, startTime, endTime, ni_sql, key.lower())
+                       'and %s group by %s') % (key.lower(), attr,
+                                                startTime, endTime,
+                                                ni_sql, key.lower())
                 cursor.execute(sql)
                 userful_dict = dict(cursor.fetchall())
 
-            # nis = cls.objects.get_info(startTime, endTime, data_domains).values()
-            # # use python Comprehensions speed-up of response
-            # # fix request timeout error when get a long period of time
-            # ni_results = [(ni.get(key.lower(), 0), ni.get(attr, 0))
-            #               for ni in nis]
-            # sum countries value for each timeStamp
-            # userful_dict = {i: sum(va for ke, va in ni_results if ke == i) for i in
-            #             set(t for t, v in ni_results)}
-
             # build timeStamp,value dict default value 0
-            all_results = {t: 0 for t in range(startTime, endTime + 1, time_span)}
+            all_results = {
+                t: 0 for t in range(startTime, endTime + 1, time_span)}
 
             # update userful value
             all_results.update(userful_dict)
             # build results
             results = [{key: k, 'value': int(v)}
                        for k, v in sorted(all_results.items(), key=lambda x: x[0])]
-
-
-            # # mix domains resp_data
-            # nis = cls.objects.get_info(startTime, endTime, data_domains).all()
-            # # use python Comprehensions speed-up of response
-            # # fix request timeout error when get a long period of time
-            # ni_results = [(getattr(ni, key.lower(), 0), getattr(ni, attr, 0))
-            #               for ni in nis]
-            # # sum countries value for each timeStamp
-            # userful_dict = {i: sum(va for ke, va in ni_results if ke == i) for i in
-            #             set(t for t, v in ni_results)}
-
-            # # build timeStamp,value dict default value 0
-            # all_results = {t: 0 for t in range(startTime, endTime + 1, time_span)}
-
-            # # update userful value
-            # all_results.update(userful_dict)
-            # # build results
-            # results = [{key: k, 'value': v}
-            #            for k, v in sorted(all_results.items(), key=lambda x: x[0])]
         else:
-            cs = City.objects.all()
-            results = []
-            for c in cs:
-                nis = NiInfo.objects.get_info(startTime, endTime, data_domains).filter(city=c).all()
-                if nis:
-                    results.append({'requests': sum(ni.requests for ni in nis),
-                                    'value': sum(getattr(ni, attr, 0) for ni in nis),
-                                    'city': c.name_en,
-                                    'city_cn': c.name_cn})
+            with connection.cursor() as cursor:
+                sql = ('select sum(i.%s),sum(i.requests),c.name_en,c.name_cn '
+                       'from overseas_niinfo i, overseas_city c '
+                       'where timestamp>%s and timestamp<%s '
+                       'and %s and i.city_id=c.id '
+                       'group by c.id') % (attr, startTime, endTime, ni_sql)
+                cursor.execute(sql)
+                rows = cursor.fetchall()
+            results = [{'requests': int(requests),
+                        'value': int(att),
+                        'city': en,
+                        'city_cn': cn}
+                       for att, requests, en, cn in rows]
+            # cs = City.objects.all()
+            # results = []
+            # for c in cs:
+            #     nis = NiInfo.objects.get_info(startTime, endTime, data_domains).filter(city=c).all()
+            #     if nis:
+            #         results.append({'requests': sum(ni.requests for ni in nis),
+            #                         'value': sum(getattr(ni, attr, 0) for ni in nis),
+            #                         'city': c.name_en,
+            #                         'city_cn': c.name_cn})
         return results
 
     class Meta:
@@ -308,11 +300,12 @@ class City(models.Model):
                 if any(u'\u4e00' <= char <= u'\u9fff' for char in name_cn):
                     self.name_cn = name_cn
                 else:
-                    raise RuntimeError('Cannot translate %s to chinese!' % self.name_en)
+                    raise RuntimeError(
+                        'Cannot translate %s to chinese!' % self.name_en)
             except:
                 Mail.send(['lelun.chen@maichuang.net', '656763371@qq.com'],
-                           'Failure Overseas City Translation',
-                           'Youdao cannot translation %s.' % self.name_en)
+                          'Failure Overseas City Translation',
+                          'Youdao cannot translation %s.' % self.name_en)
         # need add method for country map
         # if not self.country_cn:
         super(City, self).save(*args, **kwargs)
