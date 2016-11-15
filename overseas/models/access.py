@@ -233,7 +233,7 @@ class NiInfo(models.Model):
         if key != 'city':
             with connection.cursor() as cursor:
                 sql = ('select %s,sum(%s) from overseas_niinfo '
-                       'where timestamp>=%s and timestamp=<%s '
+                       'where timestamp>=%s and timestamp<=%s '
                        'and %s group by %s') % (key.lower(), attr,
                                                 startTime, endTime,
                                                 ni_sql, key.lower())
@@ -253,7 +253,7 @@ class NiInfo(models.Model):
             with connection.cursor() as cursor:
                 sql = ('select sum(i.%s),sum(i.requests),c.name_en,c.name_cn '
                        'from overseas_niinfo i, overseas_city c '
-                       'where timestamp>=%s and timestamp=<%s '
+                       'where timestamp>=%s and timestamp<=%s '
                        'and %s and i.city_id=c.id '
                        'group by c.id') % (attr, startTime, endTime, ni_sql)
                 cursor.execute(sql)
