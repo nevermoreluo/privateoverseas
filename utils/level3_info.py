@@ -24,7 +24,11 @@ def _create_ni_info(active, data):
     net = active.split('/')[-1]
     n = NetworkIdentifiers.objects.get(ni=net)
     time_span = settings.LEVEL3_TIME_SPAN * 60.0
-    points = data.select('data > point')
+    try:
+        points = data.select('data > point')
+    except:
+        print(data, active)
+        return
     for point in points:
         t = point.get('id')
         if not t:

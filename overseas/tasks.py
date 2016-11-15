@@ -26,6 +26,7 @@ def sync_level3():
     # for ni in nis:
     #     level3_sync_5min(str(ni), int(time.time()))
 
+
 @app.task
 def sync_level3_log(days=1):
     cmd = ('/usr/bin/rsync -vzrtopg --progress '
@@ -85,21 +86,32 @@ def sync_level3_8hourly():
         level3_sync_8hour(str(ni), int(time.time()))
 
 
+def base_sync(ni, timestamp=1477958400, days=14):
+    try:
+        sync_daily(str(ni), timestamp, days=days)
+    except MultipleObjectsReturned:
+        nis = NiInfo.objects.filter(timestamp__gte=timestamp,
+                                    ni=ni).all()
+        nis_arg = [(ni.ni, ni.timestamp, ni.city) for ni in nis]
+        s = {i for i in nis_arg if nis_arg.count(i) > 1}
+        mult_nis = [list(NiInfo.objects.filter(ni=n, city=c, timestamp=t).all()) for n, t, c in s]
+        [i[0].delete() for i in mult_nis]
+        sync_daily(str(ni), timestamp, days=days)
+
+
 @app.task
 def sync_level3_temp():
+    sync_service()
+    from multiprocessing.dummy import Pool as ThreadPool
+    # Make the Pool of workers
+    pool = ThreadPool(6)
     nis = NetworkIdentifiers.get_level3_ni()
-    timestamp = 1477958400
-    for ni in nis:
-        try:
-            sync_daily(str(ni), timestamp, days=14)
-        except MultipleObjectsReturned:
-            nis = NiInfo.objects.filter(timestamp__gte=timestamp,
-                                        ni=ni).all()
-            nis_arg = [(ni.ni, ni.timestamp, ni.city) for ni in nis]
-            s = {i for i in nis_arg if nis_arg.count(i) > 1}
-            mult_nis = [list(NiInfo.objects.filter(ni=n, city=c, timestamp=t).all()) for n, t, c in s]
-            [i[0].delete() for i in mult_nis]
-            sync_daily(str(ni), timestamp, days=14)
+    results = pool.map(base_sync, nis)
+    #close the pool and wait for the work to finish 
+    pool.close()
+    pool.join()
+
+
 
 
 # @app.task
