@@ -229,7 +229,7 @@ class NiInfo(models.Model):
             with connection.cursor() as cursor:
                 sql = ('select %s,%s from overseas_niinfo '
                        'where timestamp>%s and timestamp<%s '
-                       'and %s') % (attr, key.lower(), startTime, endTime, ni_sql)
+                       'and %s') % (key.lower(), attr, startTime, endTime, ni_sql)
                 cursor.execute(sql)
                 ni_results = cursor.fetchall()
 
