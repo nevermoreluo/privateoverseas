@@ -227,7 +227,7 @@ class NiInfo(models.Model):
         if key != 'city':
             from django.db import connection
             with connection.cursor() as cursor:
-                sql = ('select %s,%s from overseas_niinfo '
+                sql = ('select %s,sum(%s) from overseas_niinfo '
                        'where timestamp>%s and timestamp<%s '
                        'and %s group by %s') % (key.lower(), attr, startTime, endTime, ni_sql, key.lower())
                 cursor.execute(sql)
