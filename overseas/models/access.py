@@ -229,9 +229,9 @@ class NiInfo(models.Model):
             with connection.cursor() as cursor:
                 sql = ('select %s,%s from overseas_niinfo '
                        'where timestamp>%s and timestamp<%s '
-                       'and %s') % (key.lower(), attr, startTime, endTime, ni_sql)
+                       'and %s group by %s') % (key.lower(), attr, startTime, endTime, ni_sql, key.lower())
                 cursor.execute(sql)
-                ni_results = cursor.fetchall()
+                userful_dict = dict(cursor.fetchall())
 
             # nis = cls.objects.get_info(startTime, endTime, data_domains).values()
             # # use python Comprehensions speed-up of response
@@ -239,8 +239,8 @@ class NiInfo(models.Model):
             # ni_results = [(ni.get(key.lower(), 0), ni.get(attr, 0))
             #               for ni in nis]
             # sum countries value for each timeStamp
-            userful_dict = {i: sum(va for ke, va in ni_results if ke == i) for i in
-                        set(t for t, v in ni_results)}
+            # userful_dict = {i: sum(va for ke, va in ni_results if ke == i) for i in
+            #             set(t for t, v in ni_results)}
 
             # build timeStamp,value dict default value 0
             all_results = {t: 0 for t in range(startTime, endTime + 1, time_span)}
