@@ -75,7 +75,7 @@ class BaseSync(object):
             self.func(str(ni), self.timestamp, span=self.span)
 
 
-def base_threadpool_sync(func, timestamp, span=1, workers=2):
+def base_threadpool_sync(func, timestamp, span=1, workers=3):
     sync_service()
 
     # Make the Pool of workers
