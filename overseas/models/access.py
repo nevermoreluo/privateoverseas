@@ -4,8 +4,7 @@
 import os
 import requests
 import logging
-import time
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from django.db import models
 from django.conf import settings
