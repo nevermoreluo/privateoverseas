@@ -26,7 +26,7 @@ class Tan14User(models.Model):
     operate_right = models.BooleanField(_(u'是否可刷新、预加载'), default=True)
     record_date = models.DateTimeField(_(u'注册日期'), auto_now_add=True)
     active = models.BooleanField(_(u'是否可用'), default=True)
-    cdn = models.ManyToManyField('CDN')
+    cdn = models.ManyToManyField('CDN', blank=True)
 
     @property
     def join_date(self):
@@ -120,7 +120,7 @@ class CDN(models.Model):
                 raise ValidationError(_(u'无法保存重复的域名,请检查后再保存'))
 
     def __str__(self):
-        return self.cdn_name
+        return '%s [%s]' % (str(self.ni), 'Active' if self.active else 'Disable')
 
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, str(self))
