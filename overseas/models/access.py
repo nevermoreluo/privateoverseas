@@ -26,6 +26,7 @@ class Tan14User(models.Model):
     operate_right = models.BooleanField(_(u'是否可刷新、预加载'), default=True)
     record_date = models.DateTimeField(_(u'注册日期'), auto_now_add=True)
     active = models.BooleanField(_(u'是否可用'), default=True)
+    cdn = models.ManyToManyField('CDN')
 
     @property
     def join_date(self):
@@ -102,7 +103,6 @@ CDN_TYPE = (
 class CDN(models.Model):
     cdn_name = models.CharField(
         verbose_name=u'CDN', max_length=100, choices=CDN_TYPE)
-    tan14_user = models.ForeignKey(Tan14User, blank=True, null=True)
     ni = models.ForeignKey(
         'NetworkIdentifiers', verbose_name=u'域名', blank=True, null=True)
     active = models.BooleanField(verbose_name=u'可用', default=True)
@@ -167,7 +167,8 @@ class NetworkIdentifiers(models.Model):
     active = models.BooleanField(_(u'是否可用'), default=True)
 
     def save(self, *args, **kw):
-        if not self.pk and self.service:
+        flag = self.pk
+        if not flag and self.service:
             # This code only happens if the objects is
             # not in the database yet. Otherwise it would
             # have pk
@@ -175,6 +176,9 @@ class NetworkIdentifiers(models.Model):
             # create rsync log dir
             os.makedirs(settings.RSYNC_DAILY_DIR + self.ni)
         super(NetworkIdentifiers, self).save(*args, **kw)
+        if not flag and not self.service:
+            cdn = CDN(cdn_name='level3', ni=self)
+            cdn.save()
 
     def __str__(self):
         return '%s/%s' % (str(self.service), self.ni)
