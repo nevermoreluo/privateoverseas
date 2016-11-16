@@ -90,7 +90,7 @@ class Tan14User(models.Model):
                 'last_login': self.last_login}
 
     def _json(self):
-        cdns = self.cdn_set.all()
+        cdns = self.cdn.all()
         cdn_names = list(set(cdn.cdn_name for cdn in cdns))
 
         results = []

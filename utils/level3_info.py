@@ -67,6 +67,7 @@ def level3_sync(active, timestamp, timedelta):
         data = Level3.usage_report(active, timestamp,
                                    timestamp + timedelta, json=False, bs4=True,
                                    options={'geo': 'metro'})
+        _create_ni_info(active, data)
     except RuntimeError:
         logger.info(('No usage data was found'
                      ' for specified criteria %s.') % timestamp)
@@ -74,7 +75,6 @@ def level3_sync(active, timestamp, timedelta):
     except ForbiddenException:
         time.sleep(15)
         level3_sync(active, timestamp, timedelta)
-    _create_ni_info(active, data)
 
 
 def level3_sync_5min(active, timestamp, span=None):
