@@ -22,7 +22,7 @@ def timestamp_to_strtime(timestamp):
     :param timestamp: 13 位整数的毫秒时间戳 (1456402864242)
     :return: 返回字符串格式 {str}'2016-02-25 20:21:04.242000'
     """
-    local_str_time = datetime.fromtimestamp(timestamp / 1000.0).strftime('%Y-%m-%d %H:%M:%S.%f')
+    local_str_time = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S.%f')
     return local_str_time
 
 
@@ -46,7 +46,7 @@ class Tan14User(models.Model):
     joined.short_description = u'创建日期'
 
     def last(self):
-        return timestamp_to_strtime(self.last_login)
+        return timestamp_to_strtime(self.last_login) if self.last_login else None
     last.short_description = u'最后登录'
 
     def set_password(self, password, remove_key=False):
