@@ -21,46 +21,16 @@ class CDNInline(admin.TabularInline):
     extra = 0
 
 
-# from django.contrib.admin.widgets import FilteredSelectMultiple
-
-
-# class Tan14UserAdminForm(forms.ModelForm):
-#     class Meta:
-#         model = Tan14User
-#         fields = '__all__'
-
-#     domian = forms.ModelMultipleChoiceField(
-#         queryset=CDN.objects.all(),
-#         required=False,
-#         widget=FilteredSelectMultiple(
-#             verbose_name='domains',
-#             is_stacked=False
-#         )
-#     )
-
-#     def __init__(self, *args, **kwargs):
-#         super(Tan14UserAdminForm, self).__init__(*args, **kwargs)
-#         if self.instance.pk:
-#             self.fields['domian'].initial = self.instance.cdn_set.all()
-
-#     def save(self, commit=True):
-#         tan14user = super(Tan14UserAdminForm, self).save(commit=False)
-#         if commit:
-#             tan14user.save()
-
-#         if tan14user.pk:
-#             tan14user.cdn_set = self.cleaned_data['domian']
-#             self.save_m2m()
-
-#         return tan14user
-
-
 class Tan14UserAdmin(admin.ModelAdmin):
-    list_display = ['__str__']
+    list_display = ['__str__', 'operate_right', 'active', 'joined', 'last']
     # inlines = [
     #     CDNInline
     # ]
     # form = Tan14UserAdminForm
+    fields = ['login_email', 'password', 'joined', 'last',
+              'cdn', 'operate_right', 'active']
+    readonly_fields = ['joined', 'last']
+    list_filter = ['active', 'record_date', 'operate_right']
     filter_horizontal = ['cdn']
 
     class Meta:

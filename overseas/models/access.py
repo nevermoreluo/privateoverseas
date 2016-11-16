@@ -4,6 +4,7 @@
 import os
 import requests
 import logging
+import time
 from datetime import timedelta
 
 from django.db import models
@@ -15,6 +16,15 @@ from django.utils.translation import ugettext_lazy as _
 from utils.mail import Mail
 
 logger = logging.getLogger(__name__)
+
+
+def timestamp_to_strtime(timestamp):
+    """将 13 位整数的毫秒时间戳转化成本地普通时间 (字符串格式)
+    :param timestamp: 13 位整数的毫秒时间戳 (1456402864242)
+    :return: 返回字符串格式 {str}'2016-02-25 20:21:04.242000'
+    """
+    local_str_time = datetime.fromtimestamp(timestamp / 1000.0).strftime('%Y-%m-%d %H:%M:%S.%f')
+    return local_str_time
 
 
 class Tan14User(models.Model):
@@ -31,6 +41,14 @@ class Tan14User(models.Model):
     @property
     def join_date(self):
         return (self.record_date + timedelta(hours=8)).strftime('%Y-%m-%d %H:%M:%S')
+
+    def joined(self):
+        return self.join_date
+    joined.short_description = u'创建日期'
+
+    def last(self):
+        return timestamp_to_strtime(self.last_login)
+    last.short_description = u'最后登录'
 
     def set_password(self, password, remove_key=False):
         from utils.user_tools import get_passwd
