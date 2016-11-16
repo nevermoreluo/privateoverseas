@@ -11,7 +11,7 @@ from django.conf import settings
 import time
 import logging
 
-from utils.level3_api import Level3
+from utils.level3_api import Level3, ForbiddenException
 
 from overseas.models.access import (NetworkIdentifiers, City,
                                     NiInfo, AccessGroup, Service)
@@ -71,6 +71,9 @@ def level3_sync(active, timestamp, timedelta):
         logger.info(('No usage data was found'
                      ' for specified criteria %s.') % timestamp)
         return
+    except ForbiddenException:
+        time.sleep(15)
+        level3_sync(active, timestamp, timedelta)
     _create_ni_info(active, data)
 
 
