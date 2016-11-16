@@ -528,9 +528,9 @@ class LogoutView(BaseView):
 
 
 class LoginCheckView(BaseView):
-    http_method_names = ['options', 'get']
+    http_method_names = ['options', 'post']
 
-    def get(self, request):
+    def post(self, request):
         self.data = self.get_request_date(request)
         login_email = self.data.get('login_email', '')
         if not login_email:
