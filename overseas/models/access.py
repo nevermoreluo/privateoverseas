@@ -120,7 +120,7 @@ class CDN(models.Model):
                 raise ValidationError(_(u'无法保存重复的域名,请检查后再保存'))
 
     def __str__(self):
-        return '%s [%s]' % ('/'.join(self.ni.service.scid, self.ni.ni), 'Active' if self.active else 'Disable')
+        return '%s [%s]' % ('/'.join((self.ni.service.scid, self.ni.ni)), 'Active' if self.active else 'Disable')
 
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, str(self))
