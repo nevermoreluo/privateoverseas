@@ -273,19 +273,28 @@ class NiInfo(models.Model):
             results = [{key: k, 'value': int(v)}
                        for k, v in sorted(all_results.items(), key=lambda x: x[0])]
         else:
-            with connection.cursor() as cursor:
-                sql = ('select sum(i.%s),sum(i.requests),c.name_en,c.name_cn '
-                       'from overseas_niinfo i, overseas_city c '
-                       'where timestamp>=%s and timestamp<%s '
-                       'and %s and i.city_id=c.id '
-                       'group by c.id') % (attr, startTime, endTime, ni_sql)
-                cursor.execute(sql)
-                rows = cursor.fetchall()
-            results = [{'requests': int(requests),
-                        'value': int(att),
-                        'city': en,
-                        'city_cn': cn}
-                       for att, requests, en, cn in rows]
+            cs = City.objects.all()
+            results = []
+            for c in cs:
+                nis = NiInfo.objects.get_info(startTime, endTime, data_domains).filter(city=c).all()
+                if nis:
+                    results.append({'requests': sum(ni.requests for ni in nis),
+                                    'value': sum(getattr(ni, attr, 0) for ni in nis),
+                                    'city': c.name_en,
+                                    'city_cn': c.name_cn})
+            # with connection.cursor() as cursor:
+            #     sql = ('select sum(i.%s),sum(i.requests),c.name_en,c.name_cn '
+            #            'from overseas_niinfo i, overseas_city c '
+            #            'where timestamp>=%s and timestamp<%s '
+            #            'and %s and i.city_id=c.id '
+            #            'group by i.id') % (attr, startTime, endTime, ni_sql)
+            #     cursor.execute(sql)
+            #     rows = cursor.fetchall()
+            # results = [{'requests': int(requests),
+            #             'value': int(att),
+            #             'city': en,
+            #             'city_cn': cn}
+            #            for att, requests, en, cn in rows]
         return results
 
     class Meta:
