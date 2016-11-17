@@ -89,7 +89,7 @@ def level3_sync_hourly(active, timestamp, span=None):
 
 def level3_sync_8hour(active, timestamp, span=None):
     timestamp = int(timestamp / 28800) * 28800
-    level3_sync(active, timestamp - 36000, 36000)
+    level3_sync(active, timestamp - 36300, 36300)
 
 
 def sync_daily(active, timestamp, span=1):
