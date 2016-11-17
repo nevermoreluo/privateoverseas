@@ -95,7 +95,7 @@ def sync_level3_daily():
     sync_service()
     # nis = NetworkIdentifiers.get_level3_ni()
     timestamp = int(time.mktime(time.strptime(time.strftime('%Y-%m-%d 08:00:00', time.localtime(time.time())), '%Y-%m-%d %H:%M:%S'))) - 86400
-    base_threadpool_sync(sync_daily, timestamp)
+    base_threadpool_sync(sync_daily, timestamp, span=1)
     # for ni in nis:
     #     try:
     #         sync_daily(str(ni), timestamp, span=1)
@@ -142,7 +142,7 @@ def sync_level3_8hourly():
 
 @app.task
 def sync_level3_temp():
-    base_threadpool_sync(sync_daily, 1475280000, span=36, workers=3)
+    base_threadpool_sync(sync_daily, 1475280000, span=15, workers=3)
     # sync_service()
     # from multiprocessing.dummy import Pool as ThreadPool
     # # Make the Pool of workers

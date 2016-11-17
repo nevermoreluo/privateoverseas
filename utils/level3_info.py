@@ -92,7 +92,7 @@ def level3_sync_8hour(active, timestamp, span=None):
     level3_sync(active, timestamp - 36000, 36000)
 
 
-def sync_daily(active, timestamp, span=30):
+def sync_daily(active, timestamp, span=1):
     time_span = settings.LEVEL3_TIME_SPAN * 60.0
     day_s = 60 * 60 * 24
     timestamp = int(timestamp / time_span) * time_span
