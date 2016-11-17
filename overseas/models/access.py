@@ -287,7 +287,7 @@ class NiInfo(models.Model):
                        'from overseas_niinfo i, overseas_city c '
                        'where timestamp>=%s and timestamp<%s '
                        'and %s and i.city_id=c.id '
-                       'group by i.id') % (attr, startTime, endTime, ni_sql)
+                       'group by c.id') % (attr, startTime, endTime, ni_sql)
                 cursor.execute(sql)
                 rows = cursor.fetchall()
             results = [{'requests': int(requests),
