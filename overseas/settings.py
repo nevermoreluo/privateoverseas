@@ -316,7 +316,7 @@ CELERYBEAT_SCHEDULE = {
     },
     'level3-sync-temp': {
         'task': 'overseas.tasks.sync_level3_temp',
-        'schedule': crontab(minute=0, hour=14),
+        'schedule': crontab(minute=20, hour=19),
         'args': ()
     }
     # 'ipip-every-day': {
