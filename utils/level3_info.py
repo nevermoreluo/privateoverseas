@@ -82,7 +82,7 @@ def level3_sync(active, timestamp, timedelta):
         # 捕获调用海外api时DNS解析暂时性出错
         # [Errno -3] Temporary failure in name resolution
         if hasattr(e, 'reason'):
-            if e.reason[0] == -3:
+            if '-3' in str(e.reason):
                 logger.info('Warning:catch an DNS resolution failure, now ignore this error and restart task.')
                 level3_sync(active, timestamp, timedelta)
         else:
