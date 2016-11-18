@@ -289,7 +289,7 @@ class NiInfo(models.Model):
                 #        'and %s and i.city_id=c.id '
                 #        'group by c.id') % (attr, startTime, endTime, ni_sql)
                 sql = ('select sum(i.%s),sum(i.requests),c.name_en,c.name_cn '
-                       'from (select %s,requests from overseas_niinfo '
+                       'from (select %s,requests,city_id from overseas_niinfo '
                        'where timestamp>=%s and timestamp<%s '
                        'and %s order by city_id) '
                        'as i, overseas_city as c where i.city_id=c.id '
