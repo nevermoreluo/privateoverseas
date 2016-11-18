@@ -10,6 +10,7 @@ from django.conf import settings
 
 import time
 import logging
+from urllib.error import URLError
 
 from utils.level3_api import Level3, ForbiddenException
 
@@ -69,12 +70,23 @@ def level3_sync(active, timestamp, timedelta):
                                    options={'geo': 'metro'})
         _create_ni_info(active, data)
     except RuntimeError:
+        # 捕获当期无用量错误
         logger.info(('No usage data was found'
                      ' for specified criteria %s.') % timestamp)
         return
     except ForbiddenException:
+        # 捕获api调用频率限制，阻塞后重新开启任务
         time.sleep(15)
         level3_sync(active, timestamp, timedelta)
+    except URLError as e:
+        # 捕获调用海外api时DNS解析暂时性出错
+        # [Errno -3] Temporary failure in name resolution
+        if hasattr(e, 'reason'):
+            if e.reason[0] == -3:
+                logger.info('Warning:catch an DNS resolution failure, now ignore this error and restart task.')
+                level3_sync(active, timestamp, timedelta)
+        else:
+            raise e
 
 
 def level3_sync_5min(active, timestamp, span=None):

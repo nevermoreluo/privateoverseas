@@ -283,11 +283,6 @@ class NiInfo(models.Model):
             #                         'city': c.name_en,
             #                         'city_cn': c.name_cn})
             with connection.cursor() as cursor:
-                # sql = ('select sum(i.%s),sum(i.requests),c.name_en,c.name_cn '
-                #        'from overseas_niinfo i, overseas_city c '
-                #        'where timestamp>=%s and timestamp<%s '
-                #        'and %s and i.city_id=c.id '
-                #        'group by c.id') % (attr, startTime, endTime, ni_sql)
                 sql = ('select sum(i.%s),sum(i.requests),c.name_en,c.name_cn '
                        'from (select %s,requests,city_id from overseas_niinfo '
                        'where timestamp>=%s and timestamp<%s '
