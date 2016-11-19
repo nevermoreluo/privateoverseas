@@ -315,7 +315,7 @@ CELERYBEAT_SCHEDULE = {
         'args': ()
     },
     'level3-sync-temp': {
-        'task': 'overseas.tasks.sync_level3_temp',
+        'task': 'overseas.tasks.sync_temp',
         'schedule': crontab(minute=20, hour=3),
         'args': ()
     }
