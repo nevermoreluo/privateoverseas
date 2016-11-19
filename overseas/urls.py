@@ -31,7 +31,7 @@ admin.site.site_header = settings.ADMIN_SITE_HEADER
 
 urlpatterns = [
     # 标准admin管理系统
-    url(r'^level3/infquick/', admin.site.urls),
+    url(r'^$', admin.site.urls),
     # 登陸
     url(r'^level3/login$', LoginView.as_view(), name='login'),
     # 注銷

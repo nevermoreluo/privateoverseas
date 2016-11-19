@@ -26,7 +26,7 @@ def timestamp_to_strtime(timestamp):
     return local_str_time
 
 
-class Tan14User(models.Model):
+class InfUser(models.Model):
     login_email = models.CharField(_(u'登录邮箱'), max_length=100, unique=True)
     password = models.CharField(_(u'密码'), max_length=200)
     token = models.CharField(_(u'口令'), max_length=200, blank=True, null=True)
@@ -59,7 +59,7 @@ class Tan14User(models.Model):
 
     def save(self, *args, **kw):
         if not hasattr(self, '_set_ps'):
-            if self.pk and (self.password == Tan14User.objects.get(pk=self.pk).password):
+            if self.pk and (self.password == InfUser.objects.get(pk=self.pk).password):
                 pass
             else:
                 from utils.user_tools import get_passwd
@@ -67,7 +67,7 @@ class Tan14User(models.Model):
                 self._set_ps = True
         msg = 'modify mcuser %s' if self.pk else 'created mcuser %s'
         logger.info(msg % self.login_email)
-        return super(Tan14User, self).save(*args, **kw)
+        return super(InfUser, self).save(*args, **kw)
 
     def __str__(self):
         return self.login_email
@@ -113,7 +113,6 @@ class Tan14User(models.Model):
 
 CDN_TYPE = (
     ('level3', 'level3'),
-    ('tan14', 'tan14'),
 )
 
 
@@ -124,17 +123,17 @@ class CDN(models.Model):
         'NetworkIdentifiers', verbose_name=u'域名', blank=True, null=True)
     active = models.BooleanField(verbose_name=u'可用', default=True)
 
-    def clean(self):
-        cdns = [(c.cdn_name, c.ni.ni)
-                for c in CDN.objects.filter(tan14_user=self.tan14_user)]
-        if self.pk is None:
-            if (self.cdn_name, getattr(self.ni, 'ni', '')) in cdns:
-                raise ValidationError(_(u'无法保存重复的域名,请检查后再保存'))
-        else:
-            c = CDN.objects.get(pk=self.pk)
-            old_data = (self.cdn_name, getattr(self.ni, 'ni', ''))
-            if old_data != (c.cdn_name, getattr(c.ni, 'ni', '')) and cdns.count(old_data) > 0:
-                raise ValidationError(_(u'无法保存重复的域名,请检查后再保存'))
+    # def clean(self):
+    #     cdns = [(c.cdn_name, c.ni.ni)
+    #             for c in CDN.objects.filter(tan14_user=self.tan14_user)]
+    #     if self.pk is None:
+    #         if (self.cdn_name, getattr(self.ni, 'ni', '')) in cdns:
+    #             raise ValidationError(_(u'无法保存重复的域名,请检查后再保存'))
+    #     else:
+    #         c = CDN.objects.get(pk=self.pk)
+    #         old_data = (self.cdn_name, getattr(self.ni, 'ni', ''))
+    #         if old_data != (c.cdn_name, getattr(c.ni, 'ni', '')) and cdns.count(old_data) > 0:
+    #             raise ValidationError(_(u'无法保存重复的域名,请检查后再保存'))
 
     def __str__(self):
         return '%s [%s]' % ('/'.join((self.ni.service.scid, self.ni.ni)), 'Active' if self.active else 'Disable')
@@ -146,7 +145,6 @@ class CDN(models.Model):
         return {'err': 0,
                 'cdn': self.cdn_name,
                 'domain': self.ni,
-                'user': self.tan14_user,
                 'id': self.pk}
 
 

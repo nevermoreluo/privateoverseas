@@ -21,7 +21,7 @@ from datetime import datetime
 from utils.level3_api import Level3
 from utils.level3_info import sync_service
 from overseas.models.invalidations import Invalidations
-from overseas.models.access import NiInfo, NetworkIdentifiers, Tan14User, CDN
+from overseas.models.access import NiInfo, NetworkIdentifiers, InfUser, CDN
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -68,7 +68,7 @@ class BaseView(View):
     def check_user(self, data):
         login_email = data.get('login_email', '')
         try:
-            self.user = Tan14User.objects.get(login_email=login_email,
+            self.user = InfUser.objects.get(login_email=login_email,
                                               operate_right=True)
         except ObjectDoesNotExist:
             return False
@@ -291,7 +291,7 @@ class UserView(BaseView):
             return self.json_resp(response_data)
         operate_right = False if data.get('operations') else True
 
-        user = Tan14User(login_email=login_email, operate_right=operate_right)
+        user = InfUser(login_email=login_email, operate_right=operate_right)
         user.set_password(password)
         response_data = user.cdn_json()
 
@@ -313,7 +313,7 @@ class UserCDNView(BaseView):
                              'message': 'Need a login_email'}
             return self.json_resp(response_data)
         try:
-            self.user = Tan14User.objects.get(login_email=login_email)
+            self.user = InfUser.objects.get(login_email=login_email)
         except:
             response_data = {'err': 400,
                              'message': 'User does not exist %s.' % login_email}
@@ -368,7 +368,7 @@ class UserDomainView(BaseView):
                              'message': 'Need a login_email'}
             return self.json_resp(response_data)
         try:
-            self.user = Tan14User.objects.get(login_email=login_email)
+            self.user = InfUser.objects.get(login_email=login_email)
         except ObjectDoesNotExist:
             response_data = {'err': 400,
                              'message': 'User does not exist!'}
@@ -519,7 +519,7 @@ class LogoutView(BaseView):
                              'message': u'請輸入token'}
             return self.json_resp(response_data)
         try:
-            user_obj = Tan14User.objects.get(token=token)
+            user_obj = InfUser.objects.get(token=token)
         except ObjectDoesNotExist:
             pass
         user_obj.token = None
@@ -539,7 +539,7 @@ class LoginCheckView(BaseView):
             return self.json_resp(response_data)
         try:
             timestamp = int(time.time()) - settings.LOGIN_EXPIRES
-            user_obj = Tan14User.objects.get(login_email=login_email,
+            user_obj = InfUser.objects.get(login_email=login_email,
                                             last_login__gt=timestamp)
             flag = 1
         except ObjectDoesNotExist:

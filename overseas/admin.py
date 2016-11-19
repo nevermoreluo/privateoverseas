@@ -5,7 +5,7 @@
 from django.contrib import admin
 from django import forms
 
-from overseas.models.access import AccessGroup, Service, NetworkIdentifiers, NiInfo, CDN, Tan14User
+from overseas.models.access import AccessGroup, Service, NetworkIdentifiers, NiInfo, CDN, InfUser
 
 
 class AccessGroupAdmin(admin.ModelAdmin):
@@ -13,7 +13,7 @@ class AccessGroupAdmin(admin.ModelAdmin):
 
 
 class CDNAdmin(admin.ModelAdmin):
-    list_display = ['cdn_name', 'tan14_user', 'ni', 'active']
+    list_display = ['cdn_name', 'ni', 'active']
 
 
 class CDNInline(admin.TabularInline):
@@ -21,7 +21,7 @@ class CDNInline(admin.TabularInline):
     extra = 0
 
 
-class Tan14UserAdmin(admin.ModelAdmin):
+class InfUserAdmin(admin.ModelAdmin):
     list_display = ['__str__', 'operate_right', 'active', 'joined', 'last']
     # inlines = [
     #     CDNInline
@@ -34,7 +34,7 @@ class Tan14UserAdmin(admin.ModelAdmin):
     filter_horizontal = ['cdn']
 
     class Meta:
-        model = Tan14User
+        model = InfUser
 
 
 class NetworkIdentifiersAdmin(admin.ModelAdmin):
@@ -47,7 +47,7 @@ class NetworkIdentifiersAdmin(admin.ModelAdmin):
 
 admin.site.register(AccessGroup, AccessGroupAdmin)
 # admin.site.register(CDN, CDNAdmin)
-admin.site.register(Tan14User, Tan14UserAdmin)
+admin.site.register(InfUser, InfUserAdmin)
 admin.site.register(NetworkIdentifiers, NetworkIdentifiersAdmin)
 models = Service, NiInfo
 [admin.site.register(i) for i in models]

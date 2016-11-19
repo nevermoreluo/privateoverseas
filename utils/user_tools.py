@@ -6,7 +6,7 @@ import hashlib
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
-from overseas.models.access import Tan14User
+from overseas.models.access import InfUser
 
 
 def get_token():
@@ -22,7 +22,7 @@ def get_passwd(passwd):
 def check_passwd(login_email, password, reset_token=False):
     passwd = hashlib.md5('{}{}'.format(password, settings.SECRET_KEY).encode('utf8')).hexdigest()
     try:
-        user = Tan14User.objects.get(login_email=login_email, password=passwd)
+        user = InfUser.objects.get(login_email=login_email, password=passwd)
     except ObjectDoesNotExist:
         return False, None
     if reset_token:
