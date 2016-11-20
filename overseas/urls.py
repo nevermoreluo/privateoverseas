@@ -30,8 +30,7 @@ from overseas.views import (FluxsView, BandwidthsView, NetworkId,
 admin.site.site_header = settings.ADMIN_SITE_HEADER
 
 urlpatterns = [
-    # 标准admin管理系统
-    url(r'^$', admin.site.urls),
+
     # 登陸
     url(r'^level3/login$', LoginView.as_view(), name='login'),
     # 注銷
@@ -71,5 +70,7 @@ urlpatterns = [
     # 获取下载日志列表
     url(r'^level3/logdownload/$', LogListView.as_view(), name='log_list'),
     # test
-    url(r'^level3/test/$', abtest, name='test')
+    url(r'^level3/test/$', abtest, name='test'),
+    # 标准admin管理系统
+    url(r'^', admin.site.urls),
 ]
