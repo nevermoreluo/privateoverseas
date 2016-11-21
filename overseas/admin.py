@@ -38,19 +38,20 @@ class InfUserAdmin(admin.ModelAdmin):
 
 
 class NetworkIdentifiersAdmin(admin.ModelAdmin):
-    list_display = ['ni', 'active']
-    list_filter = ['active']
+    list_display = ['__str__', 'active']
+    list_filter = ['active', 'service']
+    readonly_fields = ['ni', 'service', 'active']
 
     class Meta:
         model = NetworkIdentifiers
 
 
-admin.site.register(AccessGroup, AccessGroupAdmin)
+# admin.site.register(AccessGroup, AccessGroupAdmin)
 # admin.site.register(CDN, CDNAdmin)
 admin.site.register(InfUser, InfUserAdmin)
 admin.site.register(NetworkIdentifiers, NetworkIdentifiersAdmin)
-models = Service, NiInfo
-[admin.site.register(i) for i in models]
+# models = Service, NiInfo
+# [admin.site.register(i) for i in models]
 # admin.site.register(Service)
 # admin.site.register(NetworkIdentifiers)
 # admin.site.register(NiInfo)

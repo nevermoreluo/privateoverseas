@@ -76,8 +76,8 @@ class InfUser(models.Model):
         return '<%s: %s>' % (self.__class__.__name__, str(self))
 
     class Meta:
-        verbose_name = u"用户"
-        verbose_name_plural = u"用户"
+        verbose_name = u"Portal用户"
+        verbose_name_plural = u"Portal用户"
 
     def level3_domains(self):
         return list({i.ni.ni for i in self.cdn_set.filter(ni__service_id__isnull=False)})
@@ -177,8 +177,8 @@ class Service(models.Model):
 
 
 class NetworkIdentifiers(models.Model):
-    ni = models.CharField(max_length=100, unique=True)
-    service = models.ForeignKey(Service, blank=True, null=True)
+    ni = models.CharField(_(u'域名'), max_length=100, unique=True)
+    service = models.ForeignKey(Service, blank=True, null=True, verbose_name=u'所属AG')
     active = models.BooleanField(_(u'是否可用'), default=True)
 
     def save(self, *args, **kw):
@@ -208,6 +208,10 @@ class NetworkIdentifiers(models.Model):
     @classmethod
     def get_level3_ni(cls):
         return cls.objects.filter(service_id__isnull=False, active=True).all()
+
+    class Meta:
+        verbose_name = u"域名"
+        verbose_name_plural = u"域名"
 
 
 class NiInfoManager(models.Manager):
