@@ -39,7 +39,7 @@ class InfUser(models.Model):
 
     @property
     def join_date(self):
-        return (self.record_date + timedelta(hours=8)).strftime('%Y-%m-%d %H:%M:%S')
+        return (self.record_date + timedelta(hours=8)).strftime('%Y-%m-%d %H:%M:%S') if self.record_date else None
 
     def joined(self):
         return self.join_date
