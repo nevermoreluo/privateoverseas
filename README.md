@@ -85,6 +85,7 @@ privateoverseas/etc
 ## 进入supervisorctl开启服务
 开启服务之前请务必确保建立日志服务必须的日志文件已被创建。
 他们分别是：
+```
 /var/log/overseas/django.log 用于存储django运行日志的文件
 /var/log/rsync_level3/ 用于提供level3日志服务的主目录
 /var/log/rsync_level3/maichuang/ 用于rsync同步level3日志文件夹
@@ -92,6 +93,7 @@ privateoverseas/etc
 /var/log/celery_stdout.log 用于存储supervisor celery日志的文件
 /var/log/privateoverseas_stdout.log 用于存储supervisor privateoverseas日志的文件
 /var/log/flower.log 用于存储supervisor flower日志的文件
+```
 ```
 supervisorctl
 >start all
